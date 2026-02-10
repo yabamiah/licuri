@@ -1,0 +1,942 @@
+@import url('https://fonts.googleapis.com/css2?family=Arapey:ital@0;1&family=M+PLUS+Rounded+1c&family=Schoolbell&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Crayon Font */
+@font-face {
+    font-family: 'DkNouveauCrayon';
+    src: url('/fonts/DkNouveauCrayonRegular-R2j6.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@layer base {
+    :root {
+        /* 🌸 Cozy Planner Theme - Light Mode
+         * Inspired by: Paperlike, Cytronics, Pluto.jl
+         * Warm cream bg + terracotta/rust accents + iOS blur
+         */
+        --background: oklch(0.975 0.012 75);
+        /* Creme quente papel */
+        --foreground: oklch(0.25 0.035 45);
+        /* Marrom quente (não preto) */
+
+        --card: oklch(0.995 0.005 80);
+        --card-foreground: oklch(0.25 0.035 45);
+
+        --popover: oklch(0.995 0.005 80);
+        --popover-foreground: oklch(0.25 0.035 45);
+
+        --primary: oklch(0.68 0.14 35);
+        /* Terracotta/Rust - tom terroso quente */
+        --primary-foreground: oklch(0.98 0.01 35);
+
+        --secondary: oklch(0.94 0.02 80);
+        /* Creme suave */
+        --secondary-foreground: oklch(0.35 0.03 45);
+
+        --muted: oklch(0.92 0.015 80);
+        --muted-foreground: oklch(0.50 0.025 45);
+
+        --accent: oklch(0.82 0.08 175);
+        /* Sage/Menta suave */
+        --accent-foreground: oklch(0.22 0.04 175);
+
+        --destructive: oklch(0.65 0.18 25);
+        --destructive-foreground: oklch(0.98 0.01 25);
+
+        --border: oklch(0.90 0.015 75);
+        --input: oklch(0.96 0.01 80);
+        --ring: oklch(0.68 0.14 35);
+
+        /* Chart Colors - Warm & Earthy */
+        --chart-1: oklch(0.68 0.14 35);
+        /* Terracotta */
+        --chart-2: oklch(0.78 0.10 175);
+        /* Sage */
+        --chart-3: oklch(0.82 0.12 85);
+        /* Mel/Âmbar */
+        --chart-4: oklch(0.72 0.10 280);
+        /* Lavanda */
+        --chart-5: oklch(0.75 0.08 210);
+        /* Azul céu */
+
+        --radius: 1rem;
+
+        /* Weekend Colors */
+        --weekend-bg: oklch(0.72 0.12 35 / 0.08);
+        --weekend-border: oklch(0.68 0.14 35 / 0.25);
+
+        /* Crepe Editor Theme Variables */
+        --crepe-color-background: var(--paper-base);
+        /* Creme, não branco */
+        --crepe-color-on-background: var(--ink-primary);
+        /* Marrom */
+        --crepe-color-primary: var(--primary);
+        --crepe-color-on-primary: var(--primary-foreground);
+        --crepe-color-surface: var(--paper-light);
+        /* Cards usam paper-light */
+        --crepe-color-on-surface: var(--ink-primary);
+        --crepe-color-outline: var(--border-medium);
+        /* Bordas consistentes */
+        --crepe-color-secondary: var(--secondary);
+        --crepe-color-on-secondary: var(--secondary-foreground);
+        --crepe-color-solid: var(--muted);
+
+        /* ═══════════════════════════════════════════════════════════════
+           MeriHari Design System Variables
+           Based on design-system.md - Hobonichi/Paper aesthetic
+           ═══════════════════════════════════════════════════════════════ */
+
+        /* === PAPER - Background colors === */
+        --paper-lightest: hsl(40, 25%, 98%);
+        --paper-light: hsl(40, 22%, 96%);
+        --paper-base: hsl(40, 20%, 97%);
+        --paper-dark: hsl(40, 18%, 94%);
+
+        /* === INK - Text colors like pen === */
+        --ink-primary: hsl(30, 40%, 20%);
+        --ink-secondary: hsl(30, 25%, 45%);
+        --ink-muted: hsl(30, 20%, 55%);
+        --ink-faint: hsl(30, 15%, 75%);
+
+        /* === BORDERS - Grid and lines === */
+        --border-faint: rgba(139, 115, 85, 0.10);
+        --border-light: rgba(139, 115, 85, 0.15);
+        --border-medium: rgba(139, 115, 85, 0.25);
+        --border-strong: rgba(139, 115, 85, 0.35);
+
+        /* === WASHI TAPE - Decorative (kawaii theme) === */
+        --washi-pink: oklch(0.85 0.10 350);
+        --washi-mint: oklch(0.82 0.10 175);
+        --washi-yellow: oklch(0.88 0.08 85);
+        --washi-lavender: oklch(0.85 0.08 280);
+        --washi-peach: oklch(0.88 0.10 45);
+        --washi-sky: oklch(0.88 0.06 220);
+
+        /* === ACCENTS - Highlights === */
+        --accent-primary: oklch(0.68 0.14 35);
+        --accent-success: oklch(0.70 0.10 175);
+        --accent-warning: oklch(0.75 0.12 85);
+        --accent-info: oklch(0.70 0.10 220);
+        --accent-love: oklch(0.80 0.15 0);
+
+        /* === SHADOWS - Paper depth === */
+        --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+        --shadow-lifted: 0 2px 4px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.04);
+        --shadow-floating: 0 4px 8px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.06);
+        --shadow-inset: inset 0 1px 2px rgba(255, 255, 255, 0.5), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+
+        /* === TYPOGRAPHY - Font families === */
+        --font-handwritten: 'Yomogi', cursive;
+        --font-rounded: 'Kosugi Maru', 'M PLUS Rounded 1c', sans-serif;
+        --font-serif: 'Arapey', serif;
+
+        /* === TEXT SCALE - Modular 1.25 (Major Third) === */
+        --text-2xs: 0.64rem;
+        --text-xs: 0.8rem;
+        --text-sm: 0.875rem;
+        --text-base: 1rem;
+        --text-lg: 1.125rem;
+        --text-xl: 1.25rem;
+        --text-2xl: 1.563rem;
+        --text-3xl: 1.953rem;
+        --text-4xl: 2.441rem;
+
+        /* === LINE HEIGHT === */
+        --leading-tight: 1.25;
+        --leading-snug: 1.375;
+        --leading-normal: 1.5;
+        --leading-relaxed: 1.625;
+        --leading-loose: 1.75;
+
+        /* === SPACING SCALE === */
+        --space-0: 0;
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-5: 1.25rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-10: 2.5rem;
+        --space-12: 3rem;
+        --space-16: 4rem;
+        --space-20: 5rem;
+        --space-24: 6rem;
+
+        /* === MERIHARI CONTRAST === */
+        --space-dense: 0.5rem;
+        --space-normal: 1rem;
+        --space-comfortable: 1.5rem;
+        --space-generous: 2rem;
+        --space-expansive: 3rem;
+
+        /* === GRID === */
+        --grid-unit: 14px;
+        --grid-opacity: 0.05;
+
+        /* === ANIMATION === */
+        --duration-instant: 100ms;
+        --duration-fast: 150ms;
+        --duration-normal: 200ms;
+        --duration-slow: 300ms;
+        --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+        --ease-gentle: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .dark {
+        /* ═══════════════════════════════════════════════════════════════
+        DARK MODE - Black Paper Theme
+        Inspiração: Papel preto de alta qualidade
+        ═══════════════════════════════════════════════════════════════ */
+
+        /* === BASE - Preto Suave === */
+        --background: oklch(0.18 0.005 240);
+        /* Preto azulado suave */
+        --foreground: oklch(0.92 0.01 240);
+        /* Branco levemente azulado */
+
+        --card: oklch(0.22 0.005 240);
+        /* Cards levemente mais claros */
+        --card-foreground: oklch(0.92 0.01 240);
+
+        --popover: oklch(0.20 0.005 240);
+        --popover-foreground: oklch(0.92 0.01 240);
+
+        /* === PRIMARY - Terracotta se destaca mais === */
+        --primary: oklch(0.72 0.16 35);
+        /* Mais vibrante que light mode */
+        --primary-foreground: oklch(0.98 0.01 35);
+
+        /* === SECONDARY - Cinza neutro === */
+        --secondary: oklch(0.28 0.005 240);
+        --secondary-foreground: oklch(0.85 0.01 240);
+
+        /* === MUTED - Cinza médio === */
+        --muted: oklch(0.25 0.005 240);
+        --muted-foreground: oklch(0.65 0.01 240);
+
+        /* === ACCENT - Mint mais vibrante === */
+        --accent: oklch(0.60 0.12 175);
+        /* Verde menta pop */
+        --accent-foreground: oklch(0.95 0.02 175);
+
+        /* === DESTRUCTIVE === */
+        --destructive: oklch(0.60 0.20 25);
+        --destructive-foreground: oklch(0.98 0.01 25);
+
+        /* === BORDERS - Cinza sutil === */
+        --border: oklch(0.32 0.005 240);
+        --input: oklch(0.25 0.005 240);
+        --ring: oklch(0.72 0.16 35);
+
+        /* === CHART COLORS - Vibrantes para contrastar === */
+        --chart-1: oklch(0.72 0.16 35);
+        /* Terracotta vibrante */
+        --chart-2: oklch(0.65 0.14 175);
+        /* Verde menta */
+        --chart-3: oklch(0.70 0.14 85);
+        /* Amarelo âmbar */
+        --chart-4: oklch(0.68 0.12 280);
+        /* Lavanda */
+        --chart-5: oklch(0.70 0.12 220);
+        /* Azul céu */
+
+        /* === WEEKEND COLORS === */
+        --weekend-bg: oklch(0.72 0.16 35 / 0.15);
+        --weekend-border: oklch(0.72 0.16 35 / 0.30);
+
+        /* ═══════════════════════════════════════════════════════════════
+        MERIHARI PAPER SYSTEM - Black Paper
+        ═══════════════════════════════════════════════════════════════ */
+
+        /* === PAPER - Níveis de preto === */
+        --paper-darkest: oklch(0.15 0.005 240);
+        /* Preto mais escuro */
+        --paper-dark-base: oklch(0.18 0.005 240);
+        /* Base principal */
+        --paper-dark-mid: oklch(0.22 0.005 240);
+        /* Cards, elevados */
+        --paper-dark-light: oklch(0.26 0.005 240);
+        /* Hover states */
+
+        /* === INK - Texto claro === */
+        --ink-dark-primary: oklch(0.92 0.01 240);
+        /* Quase branco */
+        --ink-dark-secondary: oklch(0.75 0.01 240);
+        /* Cinza claro */
+        --ink-dark-muted: oklch(0.58 0.01 240);
+        /* Cinza médio */
+        --ink-dark-faint: oklch(0.42 0.005 240);
+        /* Cinza escuro */
+
+        /* === BORDERS - Cinza sutil neutro === */
+        --border-faint: oklch(0.28 0.005 240 / 0.3);
+        --border-light: oklch(0.32 0.005 240 / 0.5);
+        --border-medium: oklch(0.38 0.005 240 / 0.7);
+        --border-strong: oklch(0.45 0.005 240 / 0.9);
+
+        /* === WASHI TAPE - Cores vibrantes para contrastar === */
+        --washi-primary: oklch(0.72 0.16 35);
+        /* Terracotta */
+        --washi-pink: oklch(0.68 0.14 350);
+        /* Rosa vibrante */
+        --washi-mint: oklch(0.65 0.14 175);
+        /* Verde menta */
+        --washi-yellow: oklch(0.75 0.14 85);
+        /* Amarelo ouro */
+        --washi-lavender: oklch(0.68 0.12 280);
+        /* Lavanda */
+        --washi-peach: oklch(0.70 0.14 45);
+        /* Pêssego */
+        --washi-sky: oklch(0.68 0.12 220);
+        /* Azul céu */
+
+        /* === ACCENTS - Cores pop === */
+        --accent-primary: oklch(0.72 0.16 35);
+        /* Terracotta vibrante */
+        --accent-highlight: oklch(0.68 0.14 350);
+        /* Rosa destaque */
+        --accent-success: oklch(0.65 0.14 175);
+        /* Verde */
+        --accent-warning: oklch(0.75 0.14 85);
+        /* Amarelo */
+        --accent-info: oklch(0.68 0.12 220);
+        /* Azul */
+        --accent-love: oklch(0.70 0.16 0);
+        /* Rosa amor */
+
+        /* === SHADOWS - Profundas e suaves === */
+        --shadow-soft:
+            0 1px 2px oklch(0.10 0.005 240 / 0.30),
+            0 1px 4px oklch(0.10 0.005 240 / 0.20);
+
+        --shadow-lifted:
+            0 2px 4px oklch(0.10 0.005 240 / 0.35),
+            0 4px 8px oklch(0.10 0.005 240 / 0.25);
+
+        --shadow-floating:
+            0 4px 8px oklch(0.10 0.005 240 / 0.40),
+            0 8px 16px oklch(0.10 0.005 240 / 0.30);
+
+        --shadow-inset:
+            inset 0 1px 2px oklch(0.98 0.01 240 / 0.02),
+            inset 0 1px 3px oklch(0.10 0.005 240 / 0.20);
+
+        /* === CREPE EDITOR - Alinhado === */
+        --crepe-color-background: var(--paper-dark-base);
+        --crepe-color-on-background: var(--ink-dark-primary);
+        --crepe-color-primary: var(--primary);
+        --crepe-color-on-primary: var(--primary-foreground);
+        --crepe-color-secondary: var(--secondary);
+        --crepe-color-on-secondary: var(--secondary-foreground);
+        --crepe-color-surface: var(--paper-dark-mid);
+        --crepe-color-on-surface: var(--ink-dark-primary);
+        --crepe-color-outline: var(--border-medium);
+        --crepe-color-solid: var(--muted);
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+
+    /* ═══════════════════════════════════════════════════════════════
+       ACCESSIBILITY UTILITIES
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Screen reader only - visually hidden but accessible */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    /* Global focus visible for interactive elements */
+    :focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+
+    /* Skip focus outline for mouse users */
+    :focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       REDUCED MOTION SUPPORT
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Respect user's reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       PERFORMANCE OPTIMIZATION UTILITIES
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Will-change hints for commonly animated elements */
+    .will-change-transform {
+        will-change: transform;
+    }
+
+    .will-change-opacity {
+        will-change: opacity;
+    }
+
+    .will-change-auto {
+        will-change: auto;
+    }
+
+    /* GPU-accelerated transforms for smoother animations */
+    .gpu-accelerated {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    /* Contain layout for complex components */
+    .contain-layout {
+        contain: layout;
+    }
+
+    .contain-paint {
+        contain: paint;
+    }
+
+    .contain-strict {
+        contain: strict;
+    }
+
+    /* iOS-like Glass Effect */
+    .glass {
+        background-color: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .dark .glass {
+        background-color: oklch(0.18 0.005 240 / 0.85);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid oklch(0.35 0.005 240 / 0.4);
+    }
+
+    /* iOS-like Glass Subtle */
+    .glass-subtle {
+        background-color: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .dark .glass-subtle {
+        background-color: oklch(0.18 0.005 240 / 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid oklch(0.32 0.005 240 / 0.3);
+    }
+
+    /* Paper Shadows - Warm tinted */
+    .shadow-paper-sm {
+        box-shadow: 0 1px 3px -1px rgba(60, 40, 25, 0.08),
+            0 1px 2px 0 rgba(60, 40, 25, 0.06);
+    }
+
+    .shadow-paper-md {
+        box-shadow: 0 4px 8px -2px rgba(60, 40, 25, 0.10),
+            0 2px 4px -2px rgba(60, 40, 25, 0.08);
+    }
+
+    .shadow-paper-float {
+        box-shadow: 0 12px 28px -6px rgba(60, 40, 25, 0.15),
+            0 6px 12px -4px rgba(60, 40, 25, 0.10);
+    }
+
+    .dark .shadow-paper-sm {
+        box-shadow:
+            0 1px 3px -1px oklch(0.10 0.005 240 / 0.40),
+            0 1px 2px 0 oklch(0.10 0.005 240 / 0.30);
+    }
+
+    .dark .shadow-paper-md {
+        box-shadow:
+            0 4px 8px -2px oklch(0.10 0.005 240 / 0.50),
+            0 2px 4px -2px oklch(0.10 0.005 240 / 0.40);
+    }
+
+    .dark .shadow-paper-float {
+        box-shadow:
+            0 12px 28px -6px oklch(0.10 0.005 240 / 0.60),
+            0 6px 12px -4px oklch(0.10 0.005 240 / 0.50);
+    }
+
+    /* Pattern Grid */
+    .pattern-grid {
+        --grid-color: rgba(60, 40, 25, 0.04);
+        background-color: var(--card);
+        background-image:
+            linear-gradient(0deg, transparent 24%, var(--grid-color) 25%, var(--grid-color) 26%, transparent 27%, transparent 74%, var(--grid-color) 75%, var(--grid-color) 76%, transparent 77%, transparent),
+            linear-gradient(90deg, transparent 24%, var(--grid-color) 25%, var(--grid-color) 26%, transparent 27%, transparent 74%, var(--grid-color) 75%, var(--grid-color) 76%, transparent 77%, transparent);
+        background-size: 50px 50px;
+    }
+
+    .pattern-dot {
+        background-color: var(--card);
+        background-image: radial-gradient(var(--card-foreground) 2px, transparent 0);
+        background-size: 30px 30px;
+        background-position: -5px -5px;
+    }
+
+    /* Pattern Lines - Horizontal lines for structured notes */
+    .pattern-lines {
+        background-color: var(--card);
+        background-image: repeating-linear-gradient(0deg,
+                transparent,
+                transparent 28px,
+                rgba(60, 40, 25, 0.06) 28px,
+                rgba(60, 40, 25, 0.06) 29px);
+    }
+
+    /* Pattern Bars - Alternating stripes */
+    .pattern-bars {
+        background-color: var(--card);
+        background-image: repeating-linear-gradient(0deg,
+                transparent,
+                transparent 48px,
+                rgba(60, 40, 25, 0.03) 48px,
+                rgba(60, 40, 25, 0.03) 96px);
+    }
+
+    .dark .pattern-grid {
+        --grid-color: oklch(0.35 0.005 240 / 0.15);
+        background-color: var(--card);
+    }
+
+    .dark .pattern-dot {
+        background-color: var(--card);
+        background-image: radial-gradient(oklch(0.40 0.005 240) 2px,
+                transparent 0);
+    }
+
+    .dark .pattern-lines {
+        background-color: var(--card);
+        background-image: repeating-linear-gradient(0deg,
+                transparent,
+                transparent 28px,
+                oklch(0.35 0.005 240 / 0.20) 28px,
+                oklch(0.35 0.005 240 / 0.20) 29px);
+    }
+
+    .dark .pattern-bars {
+        background-color: var(--card);
+        background-image: repeating-linear-gradient(0deg,
+                transparent,
+                transparent 48px,
+                oklch(0.35 0.005 240 / 0.10) 48px,
+                oklch(0.35 0.005 240 / 0.10) 96px);
+    }
+
+    /* Animations - iOS-like */
+    .pressed:active {
+        transform: scale(0.97);
+        transition: transform 0.12s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    /* iOS-like hover lift */
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Merihari Typography - Strong contrast and hierarchy */
+    .merihari-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .merihari-heading {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+    }
+
+    .merihari-body {
+        font-size: 1rem;
+        line-height: 1.75;
+        letter-spacing: 0.01em;
+    }
+
+    .merihari-caption {
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    /* Sticker Zone - Customization area placeholders */
+    .sticker-zone {
+        background-color: transparent;
+        background-image:
+            radial-gradient(circle, var(--muted) 1px, transparent 1px);
+        background-size: 16px 16px;
+        border: 2px dashed var(--border);
+        border-radius: 1rem;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .sticker-zone:hover {
+        border-color: var(--primary);
+        background-color: var(--primary);
+        background-image: none;
+        opacity: 0.08;
+    }
+
+    .sticker-zone-hint {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        font-weight: 500;
+        opacity: 0.6;
+    }
+
+    /* Generous margins utility */
+    .margin-generous {
+        padding: 2rem;
+    }
+
+    /* Transitions */
+    * {
+        transition: background-color 0.3s ease,
+            color 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+        .margin-generous {
+            padding: 3rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .margin-generous {
+            padding: 4rem;
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       MeriHari Theme Conditional Styles
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* === BTN-STAMP (Paper stamp button) === */
+    .btn-stamp {
+        padding: 0.625rem 1.25rem;
+        background: white;
+        border: 1px solid var(--border-medium);
+        border-radius: 8px;
+        font-family: var(--font-rounded);
+        font-size: var(--text-sm);
+        color: var(--ink-primary);
+        font-weight: 500;
+        box-shadow: var(--shadow-soft), var(--shadow-inset);
+        transition: all var(--duration-normal) var(--ease-smooth);
+        cursor: pointer;
+    }
+
+    .btn-stamp:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lifted);
+        border-color: var(--accent-primary);
+    }
+
+    .btn-stamp:active {
+        transform: translateY(0);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .dark .btn-stamp {
+        background: var(--paper-dark-mid);
+        color: var(--ink-dark-primary);
+        border-color: var(--border-medium);
+        box-shadow: var(--shadow-soft), var(--shadow-inset);
+    }
+
+    .dark .btn-stamp:hover {
+        background: var(--paper-dark-light);
+        border-color: var(--accent-primary);
+        box-shadow: var(--shadow-lifted);
+    }
+
+    .dark .btn-ghost {
+        background: transparent;
+        border-color: var(--border-medium);
+        color: var(--ink-dark-secondary);
+    }
+
+    .dark .btn-ghost:hover {
+        background: var(--paper-dark-mid);
+        border-style: solid;
+        color: var(--ink-dark-primary);
+    }
+
+
+    /* === BTN-GHOST (Dashed border) === */
+    .btn-ghost {
+        padding: 0.5rem 1rem;
+        background: transparent;
+        border: 1px dashed var(--border-medium);
+        border-radius: 6px;
+        color: var(--ink-secondary);
+        transition: all var(--duration-fast) ease;
+    }
+
+    .btn-ghost:hover {
+        background: var(--paper-light);
+        border-style: solid;
+        color: var(--ink-primary);
+    }
+
+    /* === INPUT-PAPER === */
+    .input-paper {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: white;
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        font-family: var(--font-rounded);
+        font-size: var(--text-sm);
+        color: var(--ink-primary);
+        box-shadow: var(--shadow-inset);
+        transition: all var(--duration-normal) ease;
+    }
+
+    .input-paper:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: var(--shadow-inset),
+            0 0 0 3px var(--accent-primary / 0.1);
+    }
+
+    .input-paper::placeholder {
+        color: var(--ink-muted);
+        opacity: 0.6;
+    }
+
+    .dark .input-paper {
+        background: var(--paper-dark-mid);
+        color: var(--ink-dark-primary);
+        border-color: var(--border-light);
+    }
+
+    .dark .input-paper:focus {
+        border-color: var(--accent-primary);
+        box-shadow:
+            var(--shadow-inset),
+            0 0 0 3px oklch(0.72 0.16 35 / 0.15);
+    }
+
+    .dark .input-paper::placeholder {
+        color: var(--ink-dark-muted);
+        opacity: 0.7;
+    }
+
+    /* === CARD-PAPER === */
+    .card-paper {
+        background: white;
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: var(--space-6);
+        box-shadow: var(--shadow-soft);
+        transition: all var(--duration-normal) ease;
+    }
+
+    .card-paper:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lifted);
+    }
+
+    .dark .card-paper {
+        background: var(--paper-dark-mid);
+        border-color: var(--border-light);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .dark .card-paper:hover {
+        background: var(--paper-dark-light);
+        box-shadow: var(--shadow-lifted);
+    }
+
+
+    /* === THEME-KAWAII - Colorful washi/pastel elements === */
+    .theme-kawaii .washi-divider {
+        height: 8px;
+        background: repeating-linear-gradient(45deg,
+                var(--washi-pink),
+                var(--washi-pink) 10px,
+                oklch(0.88 0.08 355) 10px,
+                oklch(0.88 0.08 355) 20px);
+        opacity: 0.4;
+        border-radius: 2px;
+    }
+
+    .theme-kawaii .accent-badge {
+        background: linear-gradient(135deg, var(--washi-pink), var(--accent-primary));
+        color: white;
+    }
+
+    /* === THEME-CLASSIC - Minimal, hanko, dashed === */
+    .theme-classic .washi-divider {
+        height: 1px;
+        background: transparent;
+        border-bottom: 1px dashed var(--ink-muted);
+        opacity: 0.5;
+    }
+
+    .theme-classic .accent-badge {
+        background: var(--paper-dark);
+        color: var(--ink-secondary);
+        border: 1px dashed var(--ink-muted);
+    }
+
+    .theme-classic .btn-stamp:hover {
+        border-style: dashed;
+    }
+
+    .dark.theme-kawaii .washi-divider {
+        background: repeating-linear-gradient(45deg,
+                var(--washi-pink),
+                var(--washi-pink) 10px,
+                oklch(0.70 0.16 355) 10px,
+                oklch(0.70 0.16 355) 20px);
+        opacity: 0.5;
+    }
+
+    .dark.theme-kawaii .accent-badge {
+        background: linear-gradient(135deg,
+                var(--washi-pink),
+                var(--accent-primary));
+        color: oklch(0.98 0.01 350);
+        box-shadow: 0 2px 8px oklch(0.68 0.14 350 / 0.4);
+    }
+
+    .dark.theme-classic .washi-divider {
+        border-bottom: 1px dashed var(--ink-dark-muted);
+        opacity: 0.4;
+    }
+
+    .dark.theme-classic .accent-badge {
+        background: var(--paper-dark-light);
+        color: var(--ink-dark-primary);
+        border: 1px dashed var(--border-medium);
+    }
+
+    /* === HANKO DIVIDER - Dark === */
+    .dark .hanko-divider::before {
+        border: 1px dashed var(--border-medium);
+        box-shadow: inset 0 0 2px oklch(0.35 0.005 240 / 0.3);
+    }
+
+    .dark .hanko-divider::after {
+        color: var(--ink-dark-muted);
+    }
+
+    /* === HOBONICHI GRID PAPER === */
+    .paper-grid-hobonichi {
+        background: var(--paper-base);
+        background-image:
+            repeating-linear-gradient(0deg,
+                transparent,
+                transparent calc(var(--grid-unit) - 1px),
+                var(--border-faint) calc(var(--grid-unit) - 1px),
+                var(--border-faint) var(--grid-unit)),
+            repeating-linear-gradient(90deg,
+                transparent,
+                transparent calc(var(--grid-unit) - 1px),
+                var(--border-faint) calc(var(--grid-unit) - 1px),
+                var(--border-faint) var(--grid-unit));
+        background-size: var(--grid-unit) var(--grid-unit);
+    }
+
+    .dark .paper-grid-hobonichi {
+        background: var(--paper-dark-base);
+        background-image:
+            repeating-linear-gradient(0deg,
+                transparent,
+                transparent calc(var(--grid-unit) - 1px),
+                oklch(0.35 0.005 240 / 0.15) calc(var(--grid-unit) - 1px),
+                oklch(0.35 0.005 240 / 0.15) var(--grid-unit)),
+            repeating-linear-gradient(90deg,
+                transparent,
+                transparent calc(var(--grid-unit) - 1px),
+                oklch(0.35 0.005 240 / 0.15) calc(var(--grid-unit) - 1px),
+                oklch(0.35 0.005 240 / 0.15) var(--grid-unit));
+    }
+
+    /* === HANKO STAMP (classic theme divider) === */
+    .hanko-divider {
+        position: relative;
+        margin: var(--space-8) 0;
+        height: 1px;
+        background: transparent;
+    }
+
+    .hanko-divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 32px;
+        height: 32px;
+        border: 1px dashed var(--ink-muted);
+        border-radius: 50%;
+        box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .hanko-divider::after {
+        content: "·";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1rem;
+        color: var(--ink-muted);
+    }
+}%                                                                                                                                                                                         

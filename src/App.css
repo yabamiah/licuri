@@ -44,6 +44,8 @@
     --status-doing-fg: #EA580C;
     --status-done-bg: #DCFCE7;
     --status-done-fg: #15803D;
+    --status-expired-bg: #FEE2E2;
+    --status-expired-fg: #DC2626;
 
     --checked-bg: var(--paper-light);
     --checked-fg: var(--ink-faint);
@@ -121,6 +123,8 @@
     --status-doing-fg: #FB923C;
     --status-done-bg: #064E3B;
     --status-done-fg: #4ADE80;
+    --status-expired-bg: #7F1D1D;
+    --status-expired-fg: #FCA5A5;
 
     --checked-bg: rgba(255, 255, 255, 0.05);
     --checked-fg: var(--ink-muted);
@@ -474,6 +478,10 @@ input {
     background: var(--status-done-fg);
 }
 
+.status-badge.expired {
+    background: var(--status-expired-fg);
+}
+
 /* Status selector (in task view header) */
 .status-selector {
     display: flex;
@@ -502,6 +510,10 @@ input {
     color: var(--status-done-fg);
 }
 
+.status-option.expired {
+    color: var(--status-expired-fg);
+}
+
 .status-option:hover {
     transform: translateY(-1px);
     background: var(--paper-base);
@@ -520,6 +532,11 @@ input {
 .status-option.done.selected {
     background: var(--status-done-bg);
     border-color: var(--status-done-fg);
+}
+
+.status-option.expired.selected {
+    background: var(--status-expired-bg);
+    border-color: var(--status-expired-fg);
 }
 
 /* ── Task View ─────────────────────────────────────────────── */
@@ -620,6 +637,33 @@ input {
 .task-name-edit-btn:hover {
     color: var(--accent-primary);
     background: var(--paper-base);
+}
+
+.task-set-deadline-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-muted);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-smooth);
+    border: 1px solid transparent;
+    height: 32px;
+    /* Match edit button height */
+}
+
+.task-set-deadline-btn:hover {
+    background: var(--paper-base);
+    color: var(--ink-primary);
+}
+
+.task-set-deadline-btn.has-deadline {
+    background: var(--paper-base);
+    color: var(--ink-primary);
+    border-color: var(--border-light);
 }
 
 /* ── Checklist ─────────────────────────────────────────────── */
@@ -799,6 +843,38 @@ input {
     box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.15);
 }
 
+/* ── Progress Bar ────────────────────────────────────────── */
+.progressbar-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-3);
+    padding: 0 var(--space-1);
+}
+
+.progressbar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-xs);
+    color: var(--ink-secondary);
+    font-weight: 500;
+}
+
+.progressbar-track {
+    height: 6px;
+    background: var(--border-medium);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progressbar-fill {
+    height: 100%;
+    background: var(--accent-success);
+    border-radius: var(--radius-full);
+    transition: width var(--duration-normal) var(--ease-smooth);
+}
+
 .dark .add-item-input:focus {
     background: var(--paper-lightest);
 }
@@ -954,3 +1030,200 @@ input {
 .dark .glass-subtle {
     background: rgba(0, 0, 0, 0.2);
 }
+
+/* ── Calendar Popup ────────────────────────────────────────── */
+.calendar-popup {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: var(--space-2);
+    width: 280px;
+    background: var(--paper-lightest);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-floating);
+    z-index: 50;
+    padding: var(--space-3);
+    overflow: hidden;
+    animation: slideDown var(--duration-fast) var(--ease-smooth);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+}
+
+.calendar-title {
+    font-weight: 700;
+    font-size: var(--text-sm);
+    text-transform: capitalize;
+}
+
+.nav-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    color: var(--ink-secondary);
+}
+
+.nav-btn:hover {
+    background: var(--paper-base);
+    color: var(--ink-primary);
+}
+
+.weekday-labels {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: var(--space-2);
+}
+
+.weekday-label {
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--ink-muted);
+    font-weight: 600;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-sm);
+    border-radius: var(--radius-full);
+    color: var(--ink-secondary);
+    font-family: var(--font-rounded);
+}
+
+.calendar-day:hover {
+    background: var(--paper-base);
+    color: var(--ink-primary);
+}
+
+.calendar-day.current-month {
+    color: var(--ink-primary);
+}
+
+.calendar-day.today {
+    color: var(--accent-primary);
+    font-weight: 700;
+}
+
+.calendar-day.selected {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.calendar-footer {
+    border-top: 1px solid var(--border-light);
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+    text-align: center;
+}
+
+.quick-action {
+    font-size: var(--text-xs);
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.quick-action:hover {
+    text-decoration: underline;
+}
+
+.dark .calendar-popup {
+    background: var(--paper-light);
+    border-color: var(--border-medium);
+}
+
+.dark .calendar-day:hover {
+    background: var(--paper-dark);
+}
+
+/* ── Task View Specifics (Moved from component) ──────────────── */
+.task-set-deadline-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    font-family: var(--font-rounded);
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    color: var(--ink-secondary);
+    transition: all var(--duration-fast) var(--ease-smooth);
+    cursor: pointer;
+    height: 32px;
+}
+
+.task-set-deadline-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: var(--paper-light);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+}
+
+.task-set-deadline-btn.has-deadline {
+    border-style: solid;
+    border-color: var(--accent-primary);
+    background: var(--paper-lightest);
+    color: var(--accent-primary);
+    box-shadow: var(--shadow-soft);
+}
+
+.dark .task-set-deadline-btn.has-deadline {
+    background: var(--paper-dark);
+}
+
+.clear-deadline-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    border-radius: 50%;
+    color: var(--ink-faint);
+    transition: all var(--duration-fast) var(--ease-smooth);
+    width: 20px;
+    height: 20px;
+}
+
+.clear-deadline-icon:hover {
+    color: #DC2626;
+    background: rgba(220, 38, 38, 0.1);
+}
+
+/* ── Mini Calendar Specifics (Moved from component) ────────── */
+/* Some styles were already present, ensuring completeness */
+.calendar-popup {
+    /* Merged with existing .calendar-popup */
+    width: 280px;
+    padding: var(--space-3);
+    font-family: var(--font-rounded);
+}
+
+.weekday-labels {
+    gap: 2px;
+}
+
+.weekday-label {
+    padding: var(--space-1) 0;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+/* Override or ensure specificities if needed, but existing App.css architecture covers most */

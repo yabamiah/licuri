@@ -96,6 +96,15 @@ export function useTasks() {
         }
     };
 
+    const updateDeadline = async (id, deadline) => {
+        try {
+            await db.updateTaskDeadline(id, deadline);
+            await loadTasks();
+        } catch (e) {
+            console.error('Failed to update deadline:', e);
+        }
+    };
+
     const createItem = async (text) => {
         if (!selectedTaskId) return;
         try {
@@ -140,6 +149,7 @@ export function useTasks() {
         removeTask,
         changeStatus,
         renameTask,
+        updateDeadline,
         createItem,
         toggleItemCheck,
         removeItem,

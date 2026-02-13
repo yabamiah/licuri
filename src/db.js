@@ -12,9 +12,17 @@ export async function initDB() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         status TEXT NOT NULL DEFAULT 'todo',
+        deadline DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+        // Check if deadline column exists, if not add it
+        const tableInfo = await db.select("PRAGMA table_info(tasks)");
+        const hasDeadline = tableInfo.some(col => col.name === 'deadline');
+        if (!hasDeadline) {
+            await db.execute('ALTER TABLE tasks ADD COLUMN deadline DATETIME');
+        }
 
         await db.execute(`
       CREATE TABLE IF NOT EXISTS checklist_items (
@@ -59,6 +67,11 @@ export async function deleteTask(id) {
     const d = await initDB();
     await d.execute('DELETE FROM checklist_items WHERE task_id = ?', [id]);
     await d.execute('DELETE FROM tasks WHERE id = ?', [id]);
+}
+
+export async function updateTaskDeadline(id, deadline) {
+    const d = await initDB();
+    await d.execute('UPDATE tasks SET deadline = ? WHERE id = ?', [deadline, id]);
 }
 
 export async function getItems(taskId) {

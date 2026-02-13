@@ -15,6 +15,7 @@ export default function App() {
         removeTask,
         changeStatus,
         renameTask,
+        updateDeadline,
         createItem,
         toggleItemCheck,
         removeItem,
@@ -52,6 +53,7 @@ export default function App() {
                     onToggleItem={toggleItemCheck}
                     onDeleteItem={removeItem}
                     onRenameTask={renameTask}
+                    onUpdateDeadline={updateDeadline}
                 />
             </div>
         </div>

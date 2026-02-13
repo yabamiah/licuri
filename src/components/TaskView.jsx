@@ -1,11 +1,14 @@
 import { useState, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import ChecklistItem from './ChecklistItem';
+import ProgressbarTask from './ProgressbarTask';
+import MiniCalendar from './MiniCalendar';
 
 const STATUSES = [
     { key: 'todo', label: 'A fazer' },
     { key: 'doing', label: 'Fazendo' },
     { key: 'done', label: 'Completa' },
+    { key: 'expired', label: 'Atrasada' }
 ];
 
 export default function TaskView({
@@ -16,9 +19,11 @@ export default function TaskView({
     onToggleItem,
     onDeleteItem,
     onRenameTask,
+    onUpdateDeadline,
 }) {
     const [newItemText, setNewItemText] = useState('');
     const [editingName, setEditingName] = useState(false);
+    const [openCalendar, setOpenCalendar] = useState(false);
     const inputRef = useRef(null);
     const nameInputRef = useRef(null);
 
@@ -72,45 +77,127 @@ export default function TaskView({
         setTimeout(() => nameInputRef.current?.focus(), 0);
     };
 
+    const toggleCalendar = (e) => {
+        e.stopPropagation();
+        setOpenCalendar(!openCalendar);
+    }
+
+    const handleDateSelect = (date) => {
+        const isoDate = date.toISOString();
+        onUpdateDeadline(task.id, isoDate);
+        setOpenCalendar(false);
+
+        // Check if expired
+        const now = new Date();
+        // Reset hours to compare only dates or keep time? 
+        // Use full comparison
+        if (date < now) {
+            onChangeStatus(task.id, 'expired');
+        } else {
+            // If it was expired, reset it. 
+            // If it was 'done', keep it 'done'.
+            if (task.status === 'expired') {
+                onChangeStatus(task.id, 'todo');
+            }
+        }
+    }
+
+    const handleClearDeadline = (e) => {
+        e.stopPropagation();
+        onUpdateDeadline(task.id, null);
+        if (task.status === 'expired') {
+            onChangeStatus(task.id, 'todo'); // Or calculate based on items? 'todo' is safe default.
+        }
+    }
+
+    const formatDate = (isoString) => {
+        if (!isoString) return null;
+        return new Date(isoString).toLocaleDateString('pt-BR', {
+            day: 'numeric',
+            month: 'short'
+        });
+    }
+
     const checkedCount = items.filter((i) => i.checked).length;
 
+    // Close calendar when clicking outside logic could be added here or in MiniCalendar 
+    // but MiniCalendar handles stopPropagation. 
+    // We need a global click listener to close it? 
+    // For now simple toggle.
+
     return (
-        <div className="task-view">
+        <div className="task-view" onClick={() => setOpenCalendar(false)}>
             <div className="task-header">
                 <div className="task-header-top">
-                    {editingName ? (
-                        <input
-                            ref={nameInputRef}
-                            className="task-name task-name-editing"
-                            defaultValue={task.name}
-                            key={`edit-${task.id}`}
-                            onBlur={handleNameSave}
-                            onKeyDown={handleNameKeyDown}
-                            aria-label="Editar nome da tarefa"
-                            autoFocus
-                        />
-                    ) : (
-                        <h1 className="task-name task-name-display" key={`display-${task.id}`}>
-                            {task.name}
-                        </h1>
-                    )}
-                    <button
-                        className="task-name-edit-btn"
-                        onClick={startEditing}
-                        aria-label="Editar nome"
-                        title="Editar nome"
-                    >
-                        <Icon icon="solar:pen-2-linear" width={16} />
-                    </button>
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                        {editingName ? (
+                            <input
+                                ref={nameInputRef}
+                                className="task-name task-name-editing"
+                                defaultValue={task.name}
+                                key={`edit-${task.id}`}
+                                onBlur={handleNameSave}
+                                onKeyDown={handleNameKeyDown}
+                                aria-label="Editar nome da tarefa"
+                                autoFocus
+                            />
+                        ) : (
+                            <h1 className="task-name task-name-display" key={`display-${task.id}`}>
+                                {task.name}
+                            </h1>
+                        )}
+                        <button
+                            className="task-name-edit-btn"
+                            onClick={(e) => { e.stopPropagation(); startEditing(); }}
+                            aria-label="Editar nome"
+                            title="Editar nome"
+                        >
+                            <Icon icon="solar:pen-2-linear" width={16} />
+                        </button>
+                    </div>
+
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            className={`task-set-deadline-btn ${task.deadline ? 'has-deadline' : ''}`}
+                            onClick={toggleCalendar}
+                            aria-label={task.deadline ? 'Alterar prazo' : 'Definir prazo'}
+                            title={task.deadline ? 'Alterar prazo' : 'Definir prazo'}
+                        >
+                            <Icon icon={task.deadline ? "solar:calendar-bold" : "solar:calendar-add-linear"} width={16} />
+                            {task.deadline ? (
+                                <>
+                                    <span>{formatDate(task.deadline)}</span>
+                                    <div
+                                        role="button"
+                                        className="clear-deadline-icon"
+                                        onClick={handleClearDeadline}
+                                        title="Remover prazo"
+                                        aria-label="Remover prazo"
+                                    >
+                                        <Icon icon="solar:close-circle-bold" width={16} />
+                                    </div>
+                                </>
+                            ) : (
+                                <span>Prazo</span>
+                            )}
+                        </button>
+                        {openCalendar && (
+                            <MiniCalendar
+                                selectedDate={task.deadline ? new Date(task.deadline) : null}
+                                onSelect={handleDateSelect}
+                                onClose={() => setOpenCalendar(false)}
+                            />
+                        )}
+                    </div>
                 </div>
 
                 <div className="status-selector">
-                    {STATUSES.map((s) => (
+                    {STATUSES.filter(s => s.key !== 'expired' || task.deadline).map((s) => (
                         <button
                             key={s.key}
                             className={`status-option ${s.key} ${task.status === s.key ? 'selected' : ''
                                 }`}
-                            onClick={() => onChangeStatus(task.id, s.key)}
+                            onClick={(e) => { e.stopPropagation(); onChangeStatus(task.id, s.key); }}
                         >
                             {s.label}
                         </button>
@@ -118,15 +205,7 @@ export default function TaskView({
                 </div>
 
                 {items.length > 0 && (
-                    <div
-                        style={{
-                            marginTop: 'var(--space-2)',
-                            fontSize: 'var(--text-xs)',
-                            color: 'var(--ink-muted)',
-                        }}
-                    >
-                        {checkedCount}/{items.length} concluídos
-                    </div>
+                    <ProgressbarTask total={items.length} completed={checkedCount} />
                 )}
             </div>
 

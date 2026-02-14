@@ -30,7 +30,6 @@
         }
     },
     "bundle": {
-        "createUpdaterArtifacts": false,
         "active": true,
         "targets": "all",
         "icon": [

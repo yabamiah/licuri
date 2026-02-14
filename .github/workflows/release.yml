@@ -26,7 +26,6 @@ jobs:
             libappindicator3-dev \
             librsvg2-dev \
             patchelf \
-            libsoup-3.0-dev \
             pkg-config
 
       - name: Setup Node.js

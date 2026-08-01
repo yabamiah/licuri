@@ -1,0 +1,39 @@
+/* ═══════════════════════════════════════════════════════════════
+   Licuri Design System — Entry Point
+   Import order: fonts → tokens → base → animations → components → utilities
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Fonts ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Schoolbell&family=Arapey:ital@0;1&display=swap');
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+@import './tokens/_colors.css';
+@import './tokens/_typography.css';
+@import './tokens/_spacing.css';
+@import './tokens/_effects.css';
+@import './tokens/_dark.css';
+
+/* ── Base ──────────────────────────────────────────────────── */
+@import './base/_reset.css';
+@import './base/_globals.css';
+
+/* ── Animations (before components that reference them) ──── */
+@import './animations/_keyframes.css';
+
+/* ── Components ────────────────────────────────────────────── */
+@import './components/_titlebar.css';
+@import './components/_sidebar.css';
+@import './components/_task-view.css';
+@import './components/_status.css';
+@import './components/_checklist.css';
+@import './components/_calendar.css';
+@import './components/_progress.css';
+@import './components/_loading.css';
+@import './components/_quick-tasks.css';
+@import './components/_create-task.css';
+@import './components/_reminder.css';
+@import './components/_notification-alert.css';
+
+/* ── Utilities ─────────────────────────────────────────────── */
+@import './utilities/_patterns.css';
+@import './utilities/_a11y.css';

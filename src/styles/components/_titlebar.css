@@ -1,0 +1,74 @@
+/* ═══════════════════════════════════════════════════════════════
+   Component: Titlebar
+   Window title bar with drag region and control buttons.
+   ═══════════════════════════════════════════════════════════════ */
+
+.titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--titlebar-height);
+    padding: 0 var(--space-3);
+    background: var(--paper-light);
+    border-bottom: 1px solid var(--border-light);
+    user-select: none;
+    -webkit-user-select: none;
+    flex-shrink: 0;
+}
+
+.titlebar-drag {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 100%;
+    cursor: grab;
+}
+
+.titlebar-drag:active {
+    cursor: grabbing;
+}
+
+.titlebar-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-primary);
+}
+
+.titlebar-title {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--ink-primary);
+    letter-spacing: -0.01em;
+}
+
+.titlebar-controls {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.titlebar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    color: var(--ink-muted);
+    transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.titlebar-btn:hover {
+    background: var(--border-light);
+    color: var(--ink-primary);
+}
+
+.titlebar-btn.close:hover {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.dark .titlebar-btn.close:hover {
+    background: #7F1D1D;
+    color: #FCA5A5;
+}

@@ -26,6 +26,39 @@ Gere o instalador de produção otimizado para o seu sistema operacional:
 npm run tauri build
 ```
 
+## Acesso rápido pela bandeja
+
+Enquanto o Licuri estiver em execução, o ícone da bandeja mantém um acesso
+compacto às tarefas fixadas:
+
+- marque uma tarefa com a estrela na janela principal;
+- no Windows e macOS, clique no ícone da bandeja para abrir o flyout;
+- no Linux, abra **Tarefas importantes** pelo menu do ícone da bandeja;
+- expanda uma tarefa e marque ou desmarque seus passos diretamente no flyout;
+- clique fora ou pressione `Esc` para fechar o acesso rápido.
+
+Tarefas concluídas deixam a lista na próxima abertura do flyout. A janela
+principal continua sendo o local para criar, editar e excluir tarefas.
+
+## Lembretes recorrentes
+
+Cada tarefa aberta possui um botão **Lembrete** ao lado do prazo. É possível:
+
+- usar os intervalos de 30 minutos, 1, 3, 6, 12 ou 24 horas;
+- informar uma quantidade personalizada em minutos, horas ou dias;
+- enviar uma notificação de teste antes de ativar;
+- atualizar ou desativar o lembrete quando quiser.
+
+Os lembretes usam notificações nativas do sistema e continuam contando com a
+janela escondida na bandeja. O Licuri precisa permanecer em execução. Ao
+concluir a tarefa, o lembrete é desativado automaticamente.
+
+No macOS, a versão `.app` consulta a permissão real do Notification Center e é
+assinada de forma ad-hoc para uso local. Durante `tauri dev`, o Licuri usa um
+fallback de desenvolvimento do próprio macOS; o botão de teste informa esse
+modo explicitamente. Para distribuir o app, substitua a assinatura ad-hoc por
+um certificado Apple e faça a notarização.
+
 ---
 
 ## Estrutura do Projeto

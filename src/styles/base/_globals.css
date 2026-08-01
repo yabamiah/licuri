@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════════
+   Globals
+   Base element styles and root app layout.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Root ──────────────────────────────────────────────────── */
+html,
+body,
+#root {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-rounded);
+    font-size: var(--text-sm);
+    color: var(--ink-primary);
+    background: var(--paper-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Element Defaults ──────────────────────────────────────── */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+input {
+    font-family: inherit;
+    color: inherit;
+    outline: none;
+}
+
+/* ── App Shell ─────────────────────────────────────────────── */
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}

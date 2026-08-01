@@ -1,23 +1,41 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as db from '../db';
-
-function computeStatus(items) {
-    if (!items || items.length === 0) return 'todo';
-    const checked = items.filter((i) => i.checked).length;
-    if (checked === 0) return 'todo';
-    if (checked === items.length) return 'done';
-    return 'doing';
-}
+import { broadcastTasksChanged, onTasksChanged } from '../taskEvents';
+import { computeTaskStatus } from '../taskStatus';
+import {
+    ensureNotificationPermission,
+    onReminderFailed,
+    onReminderFired,
+    sendTestReminder,
+    syncNativeReminders,
+} from '../reminderService';
+import { MAX_REMINDER_MINUTES } from '../reminderInterval';
 
 export function useTasks() {
     const [tasks, setTasks] = useState([]);
     const [selectedTaskId, setSelectedTaskId] = useState(null);
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [reminderDeliveryError, setReminderDeliveryError] = useState(null);
 
     const loadTasks = useCallback(async () => {
         const rows = await db.getTasks();
         setTasks(rows);
+        try {
+            const result = await syncNativeReminders(rows);
+            if (!result?.ok) {
+                setReminderDeliveryError({
+                    reason: result?.reason || 'permission-error',
+                    detail: result?.detail,
+                });
+            }
+        } catch (error) {
+            console.warn('Failed to sync native reminders:', error);
+            setReminderDeliveryError({
+                reason: 'delivery-error',
+                detail: String(error),
+            });
+        }
         return rows;
     }, []);
 
@@ -32,8 +50,11 @@ export function useTasks() {
     }, []);
 
     const syncStatus = useCallback(async (taskId, currentItems) => {
-        const newStatus = computeStatus(currentItems);
+        const newStatus = computeTaskStatus(currentItems);
         await db.updateTaskStatus(taskId, newStatus);
+        if (newStatus === 'done') {
+            await db.disableTaskReminder(taskId);
+        }
         await loadTasks();
     }, [loadTasks]);
 
@@ -56,13 +77,98 @@ export function useTasks() {
         loadItems(selectedTaskId);
     }, [selectedTaskId, loadItems]);
 
-    const createTask = async (name) => {
+    useEffect(() => {
+        let disposed = false;
+        let unlisten;
+
+        onTasksChanged(async () => {
+            try {
+                await Promise.all([
+                    loadTasks(),
+                    selectedTaskId ? loadItems(selectedTaskId) : Promise.resolve(),
+                ]);
+            } catch (e) {
+                console.error('Failed to refresh tasks from another window:', e);
+            }
+        }).then((unsubscribe) => {
+            if (disposed) {
+                unsubscribe();
+            } else {
+                unlisten = unsubscribe;
+            }
+        });
+
+        return () => {
+            disposed = true;
+            unlisten?.();
+        };
+    }, [loadItems, loadTasks, selectedTaskId]);
+
+    useEffect(() => {
+        let disposed = false;
+        let unlisten;
+
+        onReminderFired(async ({ taskId, nextAtMs }) => {
+            try {
+                await db.updateTaskReminderNextAt(
+                    taskId,
+                    new Date(nextAtMs).toISOString(),
+                );
+                await loadTasks();
+                await broadcastTasksChanged();
+            } catch (error) {
+                console.error('Failed to persist next reminder:', error);
+            }
+        }).then((unsubscribe) => {
+            if (disposed) {
+                unsubscribe();
+            } else {
+                unlisten = unsubscribe;
+            }
+        });
+
+        return () => {
+            disposed = true;
+            unlisten?.();
+        };
+    }, [loadTasks]);
+
+    useEffect(() => {
+        let disposed = false;
+        let unlisten;
+
+        onReminderFailed((failure) => {
+            setReminderDeliveryError(failure);
+        }).then((unsubscribe) => {
+            if (disposed) {
+                unsubscribe();
+            } else {
+                unlisten = unsubscribe;
+            }
+        });
+
+        return () => {
+            disposed = true;
+            unlisten?.();
+        };
+    }, []);
+
+    const createTask = async (name, checklistItems = []) => {
         try {
-            const id = await db.addTask(name);
+            const status = computeTaskStatus(checklistItems);
+            const id = await db.addTaskWithItems(
+                name,
+                checklistItems,
+                status,
+            );
             await loadTasks();
             setSelectedTaskId(id);
+            await loadItems(id);
+            await broadcastTasksChanged();
+            return { ok: true, id };
         } catch (e) {
             console.error('Failed to create task:', e);
+            return { ok: false, error: e };
         }
     };
 
@@ -73,6 +179,7 @@ export function useTasks() {
             if (selectedTaskId === id) {
                 setSelectedTaskId(remaining.length > 0 ? remaining[0].id : null);
             }
+            await broadcastTasksChanged();
         } catch (e) {
             console.error('Failed to remove task:', e);
         }
@@ -81,9 +188,85 @@ export function useTasks() {
     const changeStatus = async (id, status) => {
         try {
             await db.updateTaskStatus(id, status);
+            if (status === 'done') {
+                await db.disableTaskReminder(id);
+            }
             await loadTasks();
+            await broadcastTasksChanged();
         } catch (e) {
             console.error('Failed to change status:', e);
+        }
+    };
+
+    const setTaskReminder = async (id, intervalMinutes) => {
+        const normalizedMinutes = Number(intervalMinutes);
+        if (
+            !Number.isInteger(normalizedMinutes)
+            || normalizedMinutes < 1
+            || normalizedMinutes > MAX_REMINDER_MINUTES
+        ) {
+            return { ok: false, reason: 'invalid-interval' };
+        }
+
+        const permission = await ensureNotificationPermission();
+        if (!permission.ok) {
+            return {
+                ok: false,
+                reason: permission.reason,
+                detail: permission.detail,
+            };
+        }
+
+        try {
+            const nextAt = new Date(
+                Date.now() + normalizedMinutes * 60_000,
+            ).toISOString();
+            await db.updateTaskReminder(id, normalizedMinutes, nextAt);
+            await loadTasks();
+            await broadcastTasksChanged();
+            return { ok: true, nextAt };
+        } catch (error) {
+            console.error('Failed to configure reminder:', error);
+            return { ok: false, reason: 'save-error', error };
+        }
+    };
+
+    const disableTaskReminder = async (id) => {
+        try {
+            await db.disableTaskReminder(id);
+            await loadTasks();
+            await broadcastTasksChanged();
+            return { ok: true };
+        } catch (error) {
+            console.error('Failed to disable reminder:', error);
+            return { ok: false, reason: 'save-error', error };
+        }
+    };
+
+    const testTaskReminder = async (taskName) => {
+        const permission = await ensureNotificationPermission();
+        if (!permission.ok) {
+            return {
+                ok: false,
+                reason: permission.reason,
+                detail: permission.detail,
+            };
+        }
+
+        try {
+            const result = await sendTestReminder(taskName);
+            if (!result?.ok) {
+                return {
+                    ok: false,
+                    reason: result?.reason || 'send-error',
+                    detail: result?.detail,
+                };
+            }
+            setReminderDeliveryError(null);
+            return { ok: true, warning: result.warning };
+        } catch (error) {
+            console.error('Failed to send test reminder:', error);
+            return { ok: false, reason: 'send-error', error };
         }
     };
 
@@ -91,6 +274,7 @@ export function useTasks() {
         try {
             await db.updateTaskName(id, name);
             await loadTasks();
+            await broadcastTasksChanged();
         } catch (e) {
             console.error('Failed to rename task:', e);
         }
@@ -100,8 +284,19 @@ export function useTasks() {
         try {
             await db.updateTaskDeadline(id, deadline);
             await loadTasks();
+            await broadcastTasksChanged();
         } catch (e) {
             console.error('Failed to update deadline:', e);
+        }
+    };
+
+    const setTaskImportant = async (id, important) => {
+        try {
+            await db.updateTaskImportant(id, important);
+            await loadTasks();
+            await broadcastTasksChanged();
+        } catch (e) {
+            console.error('Failed to update important task:', e);
         }
     };
 
@@ -111,6 +306,7 @@ export function useTasks() {
             await db.addItem(selectedTaskId, text);
             const updatedItems = await loadItems(selectedTaskId);
             await syncStatus(selectedTaskId, updatedItems);
+            await broadcastTasksChanged();
         } catch (e) {
             console.error('Failed to create item:', e);
         }
@@ -121,6 +317,7 @@ export function useTasks() {
             await db.toggleItem(itemId);
             const updatedItems = await loadItems(selectedTaskId);
             await syncStatus(selectedTaskId, updatedItems);
+            await broadcastTasksChanged();
         } catch (e) {
             console.error('Failed to toggle item:', e);
         }
@@ -131,6 +328,7 @@ export function useTasks() {
             await db.deleteItem(itemId);
             const updatedItems = await loadItems(selectedTaskId);
             await syncStatus(selectedTaskId, updatedItems);
+            await broadcastTasksChanged();
         } catch (e) {
             console.error('Failed to remove item:', e);
         }
@@ -145,11 +343,17 @@ export function useTasks() {
         setSelectedTaskId,
         items,
         loading,
+        reminderDeliveryError,
+        clearReminderDeliveryError: () => setReminderDeliveryError(null),
         createTask,
         removeTask,
         changeStatus,
         renameTask,
         updateDeadline,
+        setTaskImportant,
+        setTaskReminder,
+        disableTaskReminder,
+        testTaskReminder,
         createItem,
         toggleItemCheck,
         removeItem,

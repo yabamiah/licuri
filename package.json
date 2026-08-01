@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "node --test",
     "preview": "vite preview",
     "tauri": "tauri",
-    "prebuild": "rm -f ~/.config/com.plannertask.app/planner-tasks.db"
+    "reset-db": "rm -f ~/.config/com.plannertask.app/planner-tasks.db"
   },
   "dependencies": {
     "@iconify/react": "^5.2.0",

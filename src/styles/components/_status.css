@@ -1,0 +1,92 @@
+/* ═══════════════════════════════════════════════════════════════
+   Component: Status
+   Status badges and status selector (task view header).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Badge (small dot indicator) ───────────────────────────── */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+    transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.status-badge.todo {
+    background: var(--status-todo-fg);
+    opacity: 0.5;
+}
+
+.status-badge.doing {
+    background: var(--status-doing-fg);
+    box-shadow: 0 0 4px var(--status-doing-bg);
+    animation: pulse 2s infinite;
+}
+
+.status-badge.done {
+    background: var(--status-done-fg);
+}
+
+.status-badge.expired {
+    background: var(--status-expired-fg);
+}
+
+/* ── Selector (pill group in header) ───────────────────────── */
+.status-selector {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.status-option {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    transition: all var(--duration-fast) var(--ease-smooth);
+    border: 1px solid transparent;
+    font-family: var(--font-rounded);
+}
+
+.status-option.todo {
+    color: var(--status-todo-fg);
+}
+
+.status-option.doing {
+    color: var(--status-doing-fg);
+}
+
+.status-option.done {
+    color: var(--status-done-fg);
+}
+
+.status-option.expired {
+    color: var(--status-expired-fg);
+}
+
+.status-option:hover {
+    transform: translateY(-1px);
+    background: var(--paper-base);
+}
+
+.status-option.todo.selected {
+    background: var(--status-todo-bg);
+    border-color: var(--status-todo-fg);
+}
+
+.status-option.doing.selected {
+    background: var(--status-doing-bg);
+    border-color: var(--status-doing-fg);
+}
+
+.status-option.done.selected {
+    background: var(--status-done-bg);
+    border-color: var(--status-done-fg);
+}
+
+.status-option.expired.selected {
+    background: var(--status-expired-bg);
+    border-color: var(--status-expired-fg);
+}

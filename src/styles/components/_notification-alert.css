@@ -1,0 +1,62 @@
+.reminder-delivery-alert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    color: #8a2f22;
+    background: #fff2e8;
+    border-bottom: 1px solid #f3b39c;
+    flex-shrink: 0;
+}
+
+.reminder-delivery-alert > svg {
+    flex-shrink: 0;
+}
+
+.reminder-delivery-alert > span {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.reminder-delivery-alert strong,
+.reminder-delivery-alert small {
+    line-height: 1.35;
+}
+
+.reminder-delivery-alert strong {
+    font-size: var(--text-xs);
+}
+
+.reminder-delivery-alert small {
+    overflow: hidden;
+    font-size: 0.7rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reminder-delivery-alert button {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    color: inherit;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    place-items: center;
+}
+
+.reminder-delivery-alert button:hover {
+    background: rgb(138 47 34 / 10%);
+}
+
+.reminder-delivery-alert button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+}
+
+.dark .reminder-delivery-alert {
+    color: #ffc2ae;
+    background: #472019;
+    border-bottom-color: #75382b;
+}

@@ -1,0 +1,232 @@
+/* ═══════════════════════════════════════════════════════════════
+   Component: Checklist
+   Checklist items, checkbox button, text, delete, and add form.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Container ─────────────────────────────────────────────── */
+.checklist {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--paper-light);
+    background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.checklist::-webkit-scrollbar {
+    width: 4px;
+}
+
+.checklist::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.checklist::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: var(--radius-full);
+}
+
+/* ── Item Row ──────────────────────────────────────────────── */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    transition: all var(--duration-normal) var(--ease-smooth);
+    margin-bottom: var(--space-2);
+    margin-left: var(--checklist-indent, 0);
+    background: var(--paper-lightest);
+    border: 1px dashed var(--border-light);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.checklist-item[data-indent-level]:not([data-indent-level='0']) {
+    position: relative;
+}
+
+.checklist-item[data-indent-level]:not([data-indent-level='0'])::before {
+    position: absolute;
+    top: -9px;
+    bottom: 50%;
+    left: -11px;
+    width: 9px;
+    border-bottom: 1px dashed var(--border-medium);
+    border-left: 1px dashed var(--border-medium);
+    border-bottom-left-radius: 6px;
+    content: '';
+    pointer-events: none;
+}
+
+.checklist-item:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+}
+
+.dark .checklist-item:hover {
+    background: var(--paper-base);
+}
+
+/* ── Checked State ─────────────────────────────────────────── */
+.checklist-item.checked {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    opacity: 0.8;
+}
+
+.checklist-item.checked:hover {
+    background: transparent;
+    filter: none;
+}
+
+/* ── Checkbox Button ───────────────────────────────────────── */
+.check-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+    border: 2px solid var(--border-strong);
+    color: transparent;
+    background: var(--paper-lightest);
+    transition: all var(--duration-normal) var(--ease-smooth);
+    cursor: pointer;
+}
+
+.check-btn:hover {
+    border-color: var(--accent-primary);
+}
+
+.checklist-item.checked .check-btn {
+    border-color: var(--checked-icon);
+    background: var(--checked-icon);
+    color: white;
+}
+
+.dark .check-btn {
+    background: var(--paper-dark);
+    border-color: var(--border-medium);
+}
+
+.dark .check-btn:hover {
+    border-color: var(--accent-primary);
+}
+
+.dark .checklist-item.checked .check-btn {
+    border-color: var(--checked-icon);
+    background: var(--checked-icon);
+    color: white;
+}
+
+.check-btn:active {
+    transform: scale(0.9);
+}
+
+/* ── Item Text ─────────────────────────────────────────────── */
+.item-text {
+    flex: 1;
+    font-size: var(--text-lg);
+    font-family: var(--font-hand);
+    line-height: 1.4;
+    color: var(--ink-primary);
+    transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.checklist-item.checked .item-text {
+    text-decoration: line-through;
+    color: var(--accent-success-secondary);
+    text-decoration-color: var(--accent-success-secondary);
+}
+
+/* ── Item Delete ───────────────────────────────────────────── */
+.item-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    color: var(--ink-faint);
+    opacity: 0;
+    transition: all var(--duration-fast) var(--ease-smooth);
+    flex-shrink: 0;
+}
+
+.checklist-item:hover .item-delete-btn {
+    opacity: 1;
+}
+
+.item-delete-btn:hover {
+    color: #DC2626;
+    background: #FEE2E2;
+}
+
+/* ── Add Item Form ─────────────────────────────────────────── */
+.add-item-form {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4) var(--space-4);
+    border-top: 1px solid var(--border-medium);
+    flex-shrink: 0;
+    background: var(--paper-lightest);
+}
+
+.add-item-input {
+    flex: 1;
+    padding: var(--space-2) var(--space-3);
+    background: var(--paper-light);
+    border: 1px dashed var(--border-medium);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-family: var(--font-hand);
+    transition: all var(--duration-fast) ease;
+}
+
+.dark .add-item-input {
+    background: var(--paper-dark);
+    border-color: var(--border-medium);
+}
+
+.add-item-input:focus {
+    border-color: var(--accent-primary);
+    background: var(--paper-lightest);
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.15);
+}
+
+.dark .add-item-input:focus {
+    background: var(--paper-lightest);
+}
+
+.add-item-input::placeholder {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-family: var(--font-rounded);
+}
+
+.add-item-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--accent-primary);
+    color: white;
+    transition: all var(--duration-fast) var(--ease-smooth);
+    flex-shrink: 0;
+}
+
+.add-item-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(251, 146, 60, 0.4);
+    filter: brightness(1.05);
+}
+
+.add-item-btn:active {
+    transform: translateY(0) scale(0.96);
+}

@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { useTasks } from './hooks/useTasks';
 import Titlebar from './components/Titlebar';
 import TaskSidebar from './components/TaskSidebar';
 import TaskView from './components/TaskView';
+import CreateTaskDialog from './components/CreateTaskDialog';
+import ReminderDeliveryAlert from './components/ReminderDeliveryAlert';
 
 export default function App() {
+    const [createTaskOpen, setCreateTaskOpen] = useState(false);
     const {
         tasks,
         selectedTask,
@@ -11,11 +15,17 @@ export default function App() {
         setSelectedTaskId,
         items,
         loading,
+        reminderDeliveryError,
+        clearReminderDeliveryError,
         createTask,
         removeTask,
         changeStatus,
         renameTask,
         updateDeadline,
+        setTaskImportant,
+        setTaskReminder,
+        disableTaskReminder,
+        testTaskReminder,
         createItem,
         toggleItemCheck,
         removeItem,
@@ -37,12 +47,16 @@ export default function App() {
     return (
         <div className="app">
             <Titlebar />
+            <ReminderDeliveryAlert
+                failure={reminderDeliveryError}
+                onDismiss={clearReminderDeliveryError}
+            />
             <div className="app-body">
                 <TaskSidebar
                     tasks={tasks}
                     selectedTaskId={selectedTaskId}
                     onSelect={setSelectedTaskId}
-                    onCreateTask={createTask}
+                    onRequestCreate={() => setCreateTaskOpen(true)}
                     onDeleteTask={removeTask}
                 />
                 <TaskView
@@ -54,8 +68,17 @@ export default function App() {
                     onDeleteItem={removeItem}
                     onRenameTask={renameTask}
                     onUpdateDeadline={updateDeadline}
+                    onSetImportant={setTaskImportant}
+                    onSetReminder={setTaskReminder}
+                    onDisableReminder={disableTaskReminder}
+                    onTestReminder={testTaskReminder}
                 />
             </div>
+            <CreateTaskDialog
+                open={createTaskOpen}
+                onClose={() => setCreateTaskOpen(false)}
+                onCreate={createTask}
+            />
         </div>
     );
 }

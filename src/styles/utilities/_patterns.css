@@ -1,0 +1,33 @@
+/* ═══════════════════════════════════════════════════════════════
+   Utilities: Patterns & Glass
+   Decorative background patterns and glassmorphism effects.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Pattern Grid ──────────────────────────────────────────── */
+.pattern-grid {
+    background-color: var(--paper-lightest);
+    background-image:
+        linear-gradient(to right, var(--border-faint) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border-faint) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+/* ── Glassmorphism ─────────────────────────────────────────── */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass {
+    background: rgba(30, 30, 30, 0.7);
+}
+
+.glass-subtle {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+}
+
+.dark .glass-subtle {
+    background: rgba(0, 0, 0, 0.2);
+}

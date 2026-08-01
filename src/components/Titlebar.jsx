@@ -27,7 +27,7 @@ export default function Titlebar() {
                 <button
                     className="titlebar-btn close"
                     onClick={() => appWindow.hide()}
-                    aria-label="Fechar para bandeja"
+                    aria-label="Fechar para barra de tarefas"
                 >
                     <Icon icon="solar:close-square-linear" width={16} />
                 </button>

@@ -3,6 +3,10 @@ import { Icon } from '@iconify/react';
 
 export default function ChecklistItem({ item, onToggle, onDelete }) {
     const [animating, setAnimating] = useState(false);
+    const indentLevel = Math.max(
+        0,
+        Math.min(Number(item.indent_level) || 0, 3),
+    );
 
     const handleToggle = () => {
         setAnimating(true);
@@ -11,7 +15,11 @@ export default function ChecklistItem({ item, onToggle, onDelete }) {
     };
 
     return (
-        <div className={`checklist-item ${item.checked ? 'checked' : ''}`}>
+        <div
+            className={`checklist-item ${item.checked ? 'checked' : ''}`}
+            data-indent-level={indentLevel}
+            style={{ '--checklist-indent': `${indentLevel * 20}px` }}
+        >
             <button
                 className={`check-btn ${animating ? 'check-animate' : ''}`}
                 onClick={handleToggle}

@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════════════════
+   Component: Progress Bar
+   Track and fill bar for task completion percentage.
+   ═══════════════════════════════════════════════════════════════ */
+
+.progressbar-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-3);
+    padding: 0 var(--space-1);
+}
+
+.progressbar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-xs);
+    color: var(--ink-secondary);
+    font-weight: 500;
+}
+
+.progressbar-track {
+    height: 6px;
+    background: var(--border-medium);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progressbar-fill {
+    height: 100%;
+    background: var(--accent-success);
+    border-radius: var(--radius-full);
+    transition: width var(--duration-normal) var(--ease-smooth);
+}

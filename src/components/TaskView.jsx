@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 import ChecklistItem from './ChecklistItem';
 import ProgressbarTask from './ProgressbarTask';
 import MiniCalendar from './MiniCalendar';
+import ReminderPicker from './ReminderPicker';
 
 const STATUSES = [
     { key: 'todo', label: 'A fazer' },
@@ -20,10 +21,15 @@ export default function TaskView({
     onDeleteItem,
     onRenameTask,
     onUpdateDeadline,
+    onSetImportant,
+    onSetReminder,
+    onDisableReminder,
+    onTestReminder,
 }) {
     const [newItemText, setNewItemText] = useState('');
     const [editingName, setEditingName] = useState(false);
     const [openCalendar, setOpenCalendar] = useState(false);
+    const [openReminder, setOpenReminder] = useState(false);
     const inputRef = useRef(null);
     const nameInputRef = useRef(null);
 
@@ -79,6 +85,7 @@ export default function TaskView({
 
     const toggleCalendar = (e) => {
         e.stopPropagation();
+        setOpenReminder(false);
         setOpenCalendar(!openCalendar);
     }
 
@@ -126,10 +133,16 @@ export default function TaskView({
     // For now simple toggle.
 
     return (
-        <div className="task-view" onClick={() => setOpenCalendar(false)}>
+        <div
+            className="task-view"
+            onClick={() => {
+                setOpenCalendar(false);
+                setOpenReminder(false);
+            }}
+        >
             <div className="task-header">
                 <div className="task-header-top">
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                    <div className="task-title-row">
                         {editingName ? (
                             <input
                                 ref={nameInputRef}
@@ -147,6 +160,33 @@ export default function TaskView({
                             </h1>
                         )}
                         <button
+                            className={`task-important-btn ${task.important ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onSetImportant(task.id, !task.important);
+                            }}
+                            aria-label={
+                                task.important
+                                    ? 'Remover dos acessos rápidos'
+                                    : 'Fixar nos acessos rápidos'
+                            }
+                            aria-pressed={Boolean(task.important)}
+                            title={
+                                task.important
+                                    ? 'Remover dos acessos rápidos'
+                                    : 'Fixar nos acessos rápidos'
+                            }
+                        >
+                            <Icon
+                                icon={
+                                    task.important
+                                        ? 'solar:star-bold'
+                                        : 'solar:star-linear'
+                                }
+                                width={18}
+                            />
+                        </button>
+                        <button
                             className="task-name-edit-btn"
                             onClick={(e) => { e.stopPropagation(); startEditing(); }}
                             aria-label="Editar nome"
@@ -156,7 +196,20 @@ export default function TaskView({
                         </button>
                     </div>
 
-                    <div style={{ position: 'relative' }}>
+                    <div className="task-header-actions">
+                        <ReminderPicker
+                            task={task}
+                            open={openReminder}
+                            onToggle={() => {
+                                setOpenCalendar(false);
+                                setOpenReminder((value) => !value);
+                            }}
+                            onClose={() => setOpenReminder(false)}
+                            onSave={onSetReminder}
+                            onDisable={onDisableReminder}
+                            onTest={onTestReminder}
+                        />
+                        <div className="task-deadline-control">
                         <button
                             className={`task-set-deadline-btn ${task.deadline ? 'has-deadline' : ''}`}
                             onClick={toggleCalendar}
@@ -188,6 +241,7 @@ export default function TaskView({
                                 onClose={() => setOpenCalendar(false)}
                             />
                         )}
+                        </div>
                     </div>
                 </div>
 

@@ -1,0 +1,46 @@
+/* ═══════════════════════════════════════════════════════════════
+   Color Tokens
+   Paper, ink, border, accent, status & checked-state palettes.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Paper — Background surfaces ────────────────────────── */
+    --paper-lightest: #FFFFFF;
+    --paper-light: #F9F8F4;
+    --paper-base: #F0EFE9;
+    --paper-dark: #E6E4DC;
+
+    /* ── Ink — Text hierarchy ───────────────────────────────── */
+    --ink-primary: #2D2A26;
+    --ink-secondary: #57534E;
+    --ink-muted: #8C8680;
+    --ink-faint: #C8C2BC;
+
+    /* ── Borders — Lines & dividers ─────────────────────────── */
+    --border-faint: rgba(0, 0, 0, 0.04);
+    --border-light: rgba(0, 0, 0, 0.08);
+    --border-medium: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.20);
+
+    /* ── Accents — Highlights & actions ─────────────────────── */
+    --accent-primary: #FB923C;
+    --accent-success: #84CC16;
+    --accent-success-secondary: #ADEBB3;
+    --accent-warning: #FACC15;
+    --accent-info: #60A5FA;
+
+    /* ── Status — Task state colors ─────────────────────────── */
+    --status-todo-bg: #F5F5F4;
+    --status-todo-fg: #78716C;
+    --status-doing-bg: #FFEDD5;
+    --status-doing-fg: #EA580C;
+    --status-done-bg: #DCFCE7;
+    --status-done-fg: #15803D;
+    --status-expired-bg: #FEE2E2;
+    --status-expired-fg: #DC2626;
+
+    /* ── Checked — Completed item styling ───────────────────── */
+    --checked-bg: var(--paper-light);
+    --checked-fg: var(--ink-faint);
+    --checked-icon: var(--accent-success);
+}

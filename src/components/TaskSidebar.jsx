@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import StatusBadge from './StatusBadge';
 
@@ -6,73 +5,21 @@ export default function TaskSidebar({
     tasks,
     selectedTaskId,
     onSelect,
-    onCreateTask,
+    onRequestCreate,
     onDeleteTask,
 }) {
-    const [showForm, setShowForm] = useState(false);
-    const [newName, setNewName] = useState('');
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const name = newName.trim();
-        if (!name) return;
-        await onCreateTask(name);
-        setNewName('');
-        setShowForm(false);
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Escape') {
-            setShowForm(false);
-            setNewName('');
-        }
-    };
-
     return (
         <aside className="task-sidebar">
             <div className="sidebar-header">
                 <h2>Tarefas</h2>
                 <button
                     className="sidebar-add-btn"
-                    onClick={() => setShowForm((v) => !v)}
+                    onClick={onRequestCreate}
                     aria-label="Nova tarefa"
                 >
-                    <Icon
-                        icon={showForm ? 'solar:close-circle-bold' : 'solar:add-circle-bold'}
-                        width={20}
-                    />
+                    <Icon icon="solar:add-circle-bold" width={20} />
                 </button>
             </div>
-
-            {showForm && (
-                <form className="task-form" onSubmit={handleSubmit}>
-                    <div className="task-form-row">
-                        <input
-                            className="task-form-input"
-                            value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Nome da tarefa..."
-                            autoFocus
-                        />
-                        <button
-                            type="submit"
-                            className="task-form-action confirm"
-                            aria-label="Confirmar"
-                        >
-                            <Icon icon="solar:check-circle-bold" width={18} />
-                        </button>
-                        <button
-                            type="button"
-                            className="task-form-action cancel"
-                            onClick={() => { setShowForm(false); setNewName(''); }}
-                            aria-label="Cancelar"
-                        >
-                            <Icon icon="solar:close-circle-bold" width={18} />
-                        </button>
-                    </div>
-                </form>
-            )}
 
             <div className="task-list">
                 {tasks.map((task) => (
@@ -99,7 +46,7 @@ export default function TaskSidebar({
                     </div>
                 ))}
 
-                {tasks.length === 0 && !showForm && (
+                {tasks.length === 0 && (
                     <div
                         style={{
                             padding: 'var(--space-4)',

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseChecklistText } from './checklistParser.js';
 
-test('converte o exemplo do Jira e mantém a hierarquia', () => {
+test('converte uma lista numerada e mantém a hierarquia', () => {
     const source = `1. [documentação] Criar diagramas de fluxo de criação e gerenciamento de Order no payment-services
    a. Diagrama do fluxo de criação
    b. Diagrama do fluxo de leitura

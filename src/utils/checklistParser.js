@@ -7,11 +7,11 @@ function readLine(line) {
     let markerType = null;
     let markerDepth = 0;
 
-    const jiraHeading = content.match(/^(#{1,6})\s+/);
-    if (jiraHeading) {
-        markerType = 'jira';
-        markerDepth = jiraHeading[1].length - 1;
-        content = content.slice(jiraHeading[0].length);
+    const markdownHeading = content.match(/^(#{1,6})\s+/);
+    if (markdownHeading) {
+        markerType = 'heading';
+        markerDepth = markdownHeading[1].length - 1;
+        content = content.slice(markdownHeading[0].length);
     } else {
         const ordered = content.match(
             /^(\d+(?:\.\d+)*|[A-Za-z])(?:[.)])\s+/,
@@ -59,7 +59,7 @@ function getIndentRank(leadingSpaces, indentationColumns) {
 }
 
 /**
- * Converte texto copiado do Jira (ou listas Markdown) em itens do checklist.
+ * Converte listas em Markdown ou texto estruturado em itens do checklist.
  * Linhas vazias são ignoradas e os marcadores visuais são removidos.
  */
 export function parseChecklistText(value) {

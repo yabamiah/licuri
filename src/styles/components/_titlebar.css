@@ -44,7 +44,80 @@
 
 .titlebar-controls {
     display: flex;
+    align-items: center;
     gap: var(--space-1);
+}
+
+.theme-toggle {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    padding: 0;
+    overflow: hidden;
+    background: var(--paper-base);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-inset);
+    transition:
+        background var(--duration-fast) var(--ease-smooth),
+        border-color var(--duration-fast) var(--ease-smooth);
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent-primary);
+}
+
+.theme-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--paper-lightest);
+    border: 1px solid var(--border-light);
+    border-radius: 50%;
+    box-shadow: var(--shadow-soft);
+    transition: transform var(--duration-normal) var(--ease-bounce);
+}
+
+.theme-toggle-marker {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition:
+        color var(--duration-fast) var(--ease-smooth),
+        opacity var(--duration-fast) var(--ease-smooth);
+}
+
+.theme-toggle-marker--sun {
+    left: 6px;
+    color: var(--accent-primary);
+}
+
+.theme-toggle-marker--moon {
+    right: 6px;
+    color: var(--ink-faint);
+    opacity: 0.65;
+}
+
+.dark .theme-toggle {
+    background: var(--paper-dark);
+}
+
+.dark .theme-toggle-thumb {
+    transform: translateX(20px);
+}
+
+.dark .theme-toggle-marker--sun {
+    color: var(--ink-muted);
+    opacity: 0.55;
+}
+
+.dark .theme-toggle-marker--moon {
+    color: var(--accent-warning);
+    opacity: 1;
 }
 
 .titlebar-btn {
@@ -63,6 +136,12 @@
     color: var(--ink-primary);
 }
 
+.theme-toggle:focus-visible,
+.titlebar-btn:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
 .titlebar-btn.close:hover {
     background: #FEE2E2;
     color: #DC2626;
@@ -71,4 +150,12 @@
 .dark .titlebar-btn.close:hover {
     background: #7F1D1D;
     color: #FCA5A5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-toggle,
+    .theme-toggle-thumb,
+    .theme-toggle-marker {
+        transition: none;
+    }
 }

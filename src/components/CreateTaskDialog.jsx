@@ -131,7 +131,7 @@ export default function CreateTaskDialog({ open, onClose, onCreate }) {
                     </span>
                     <span className="create-task-heading">
                         <span>Nova tarefa</span>
-                        <h2 id="create-task-title">Importar passos do Jira</h2>
+                        <h2 id="create-task-title">Importar tarefa em Markdown</h2>
                     </span>
                     <button
                         type="button"
@@ -147,8 +147,8 @@ export default function CreateTaskDialog({ open, onClose, onCreate }) {
                 <form className="create-task-form" onSubmit={handleSubmit}>
                     <div className="create-task-body">
                         <p id="create-task-description" className="create-task-intro">
-                            Cole o título e a descrição. O Licuri transforma cada
-                            linha da lista em um passo editável.
+                            Cole o título e uma lista em Markdown. O Licuri transforma
+                            cada linha em um passo editável.
                         </p>
 
                         <label className="create-task-field">
@@ -168,7 +168,7 @@ export default function CreateTaskDialog({ open, onClose, onCreate }) {
                                 aria-describedby={
                                     titleInvalid ? 'task-title-error' : undefined
                                 }
-                                placeholder="Cole aqui o título da task do Jira"
+                                placeholder="Cole aqui o título da tarefa"
                                 disabled={submitting}
                             />
                             {titleInvalid && (

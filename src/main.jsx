@@ -2,14 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import QuickTasks from './components/QuickTasks';
+import { initializeTheme } from './theme';
 import './styles/index.css';
 
-const mq = window.matchMedia('(prefers-color-scheme: dark)');
-const applyTheme = (dark) => {
-    document.documentElement.classList.toggle('dark', dark);
-};
-applyTheme(mq.matches);
-mq.addEventListener('change', (e) => applyTheme(e.matches));
+initializeTheme();
 
 const isQuickTasksWindow =
     new URLSearchParams(window.location.search).get('view') === 'quick-tasks';

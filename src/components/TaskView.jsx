@@ -4,6 +4,7 @@ import ChecklistItem from './ChecklistItem';
 import ProgressbarTask from './ProgressbarTask';
 import MiniCalendar from './MiniCalendar';
 import ReminderPicker from './ReminderPicker';
+import TaskResources from './TaskResources';
 
 const STATUSES = [
     { key: 'todo', label: 'A fazer' },
@@ -261,6 +262,8 @@ export default function TaskView({
                 {items.length > 0 && (
                     <ProgressbarTask total={items.length} completed={checkedCount} />
                 )}
+
+                <TaskResources key={task.id} taskId={task.id} />
             </div>
 
             <div className="checklist">

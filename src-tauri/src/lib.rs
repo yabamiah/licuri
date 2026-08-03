@@ -545,6 +545,7 @@ pub fn run() {
     tauri::Builder::default()
         .manage(QuickWindowState::default())
         .manage(ReminderSchedulerState::default())
+        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_positioner::init())
         .plugin(tauri_plugin_sql::Builder::default().build())
         .invoke_handler(tauri::generate_handler![

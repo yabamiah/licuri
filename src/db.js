@@ -97,12 +97,32 @@ export async function initDB() {
             }
         }
 
+        await connection.execute(`
+      CREATE TABLE IF NOT EXISTS task_resources (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        task_id INTEGER NOT NULL,
+        type TEXT NOT NULL,
+        value TEXT NOT NULL,
+        label TEXT,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+      )
+    `);
+
         await connection.execute(
             'CREATE INDEX IF NOT EXISTS idx_tasks_important_status ON tasks(important, status)',
         );
         await connection.execute(
             'CREATE INDEX IF NOT EXISTS idx_checklist_task_position ON checklist_items(task_id, position)',
         );
+        await connection.execute(
+            'CREATE INDEX IF NOT EXISTS idx_task_resources_task_created ON task_resources(task_id, created_at, id)',
+        );
+        await connection.execute(`
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_task_resources_unique_link
+            ON task_resources(task_id, value)
+            WHERE type = 'link'
+        `);
 
         db = connection;
         return connection;
@@ -234,6 +254,7 @@ export async function updateTaskImportant(id, important) {
 
 export async function deleteTask(id) {
     const d = await initDB();
+    await d.execute('DELETE FROM task_resources WHERE task_id = ?', [id]);
     await d.execute('DELETE FROM checklist_items WHERE task_id = ?', [id]);
     await d.execute('DELETE FROM tasks WHERE id = ?', [id]);
 }
@@ -309,4 +330,63 @@ export async function toggleItem(id) {
 export async function deleteItem(id) {
     const d = await initDB();
     await d.execute('DELETE FROM checklist_items WHERE id = ?', [id]);
+}
+
+export async function getTaskResources(taskId) {
+    const d = await initDB();
+    return await d.select(
+        `SELECT id, type, value, label, created_at AS "createdAt"
+         FROM task_resources
+         WHERE task_id = ?
+         ORDER BY created_at DESC, id DESC`,
+        [taskId],
+    );
+}
+
+export async function addTaskResource(taskId, resource) {
+    const d = await initDB();
+    const result = await d.execute(
+        `INSERT INTO task_resources (task_id, type, value, label)
+         VALUES (?, ?, ?, ?)`,
+        [taskId, resource.type, resource.value, resource.label],
+    );
+    const resourceId = result.lastInsertId;
+
+    if (resourceId === undefined) {
+        throw new Error('O banco não retornou o identificador do novo recurso.');
+    }
+
+    const rows = await d.select(
+        `SELECT id, type, value, label, created_at AS "createdAt"
+         FROM task_resources
+         WHERE id = ? AND task_id = ?`,
+        [resourceId, taskId],
+    );
+    return rows[0];
+}
+
+export async function updateTaskResource(taskId, resourceId, resource) {
+    const d = await initDB();
+    await d.execute(
+        `UPDATE task_resources
+         SET type = ?, value = ?, label = ?
+         WHERE id = ? AND task_id = ?`,
+        [resource.type, resource.value, resource.label, resourceId, taskId],
+    );
+
+    const rows = await d.select(
+        `SELECT id, type, value, label, created_at AS "createdAt"
+         FROM task_resources
+         WHERE id = ? AND task_id = ?`,
+        [resourceId, taskId],
+    );
+    return rows[0];
+}
+
+export async function deleteTaskResource(taskId, resourceId) {
+    const d = await initDB();
+    await d.execute(
+        'DELETE FROM task_resources WHERE id = ? AND task_id = ?',
+        [resourceId, taskId],
+    );
 }

@@ -28,6 +28,7 @@
 @import './components/_checklist.css';
 @import './components/_calendar.css';
 @import './components/_progress.css';
+@import './components/_resources.css';
 @import './components/_loading.css';
 @import './components/_quick-tasks.css';
 @import './components/_create-task.css';
